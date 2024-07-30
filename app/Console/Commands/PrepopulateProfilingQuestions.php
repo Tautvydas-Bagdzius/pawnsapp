@@ -39,6 +39,7 @@ class PrepopulateProfilingQuestions extends Command
     {
         $gender = ProfilingQuestion::firstOrCreate([
             'question' => 'Gender',
+            'slug' => 'gender',
             'type' => ProfilingQuestionTypes::SINGLE_CHOICE,
         ]);
 
@@ -61,8 +62,9 @@ class PrepopulateProfilingQuestions extends Command
      */
     private function insertDateOfBirth(): void
     {
-        $birthDate = ProfilingQuestion::firstOrCreate([
+        ProfilingQuestion::firstOrCreate([
             'question' => 'Date of birth',
+            'slug' => 'date_of_birth',
             'type' => ProfilingQuestionTypes::DATE,
         ]);
     }

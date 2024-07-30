@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProfilingQuestion;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ProfilingController extends Controller
 {
-    public function list()
+    /**
+     * Return a list of available profiling questions with answer options if applicable
+     */
+    public function list(): JsonResponse
     {
         $questions = ProfilingQuestion::select(['id', 'question', 'type'])
             ->with('answers')

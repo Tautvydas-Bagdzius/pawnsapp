@@ -18,6 +18,7 @@ class ProfilingQuestion extends Model
     protected $fillable = [
         'question',
         'type',
+        'slug',
     ];
 
     /**
