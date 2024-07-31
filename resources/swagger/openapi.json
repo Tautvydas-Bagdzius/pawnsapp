@@ -6,21 +6,70 @@
   },
   "servers": [
     {
+      "url": "http://{{url}}"
+    },
+    {
       "url": "http://localhost"
     }
   ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
   "tags": [
     {
+      "name": "Tokens"
+    },
+    {
       "name": "Auth"
+    },
+    {
+      "name": "Profiling Questions"
+    },
+    {
+      "name": "User"
+    },
+    {
+      "name": "Transactions"
     }
   ],
   "paths": {
-    "/register": {
+    "/csrf": {
+      "get": {
+        "tags": [
+          "Tokens"
+        ],
+        "summary": "CSRF Token",
+        "parameters": [
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "{{X}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/tokens/create": {
       "post": {
         "tags": [
-          "Auth"
+          "Tokens"
         ],
-        "summary": "Register",
+        "summary": "Bearer",
         "requestBody": {
           "content": {
             "multipart/form-data": {
@@ -59,12 +108,39 @@
         }
       }
     },
-    "/csrf": {
-      "get": {
+    "/register": {
+      "post": {
         "tags": [
-          "default"
+          "Auth"
         ],
-        "summary": "CSRF Token",
+        "summary": "Register",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "TestUsername"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "test123@test.test"
+                  },
+                  "password": {
+                    "type": "integer",
+                    "example": "12345678"
+                  },
+                  "password_confirmation": {
+                    "type": "integer",
+                    "example": "12345678"
+                  }
+                }
+              }
+            }
+          }
+        },
         "parameters": [
           {
             "name": "X-CSRF-TOKEN",
@@ -73,6 +149,317 @@
               "type": "string"
             },
             "example": "{{csrf-token}}"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "taus92@gmail.com"
+                  },
+                  "password": {
+                    "type": "integer",
+                    "example": "12345678"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "{{csrf-token}}"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Logout",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Owl"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "taus92@gmail.com"
+                  },
+                  "password": {
+                    "type": "integer",
+                    "example": "12345678"
+                  },
+                  "password_confirmation": {
+                    "type": "integer",
+                    "example": "12345678"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-CSRF-TOKEN",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "{{csrf-token}}"
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
+          },
+          {
+            "name": "X-XSRF-TOKEN",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "{{X-XSRF-TOKEN}}"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/profiling/questions": {
+      "get": {
+        "tags": [
+          "Profiling Questions"
+        ],
+        "summary": "Questions",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/user/wallet": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Wallet",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/user": {
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "User",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "properties": {
+                  "gender": {
+                    "type": "string",
+                    "example": "Male"
+                  },
+                  "date_of_birth": {
+                    "type": "string",
+                    "example": "1980-06-01"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/api/user/transactions": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "List",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Claim",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
           }
         ],
         "responses": {
