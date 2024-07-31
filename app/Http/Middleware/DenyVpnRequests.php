@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Traits\IpChecks;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DenyVpnRequests
 {
+    use IpChecks;
+
     const BLOCKED_IPS_PREFIX = 'ips_blocked';
     const ALLOWED_IPS_PREFIX = 'ips_allowed';
 
@@ -46,20 +49,6 @@ class DenyVpnRequests
         Cache::put(self::ALLOWED_IPS_PREFIX . '.' . $ip, $ip, 3600);
 
         return $next($request);
-    }
-
-    /**
-     * Crude way to pull out external IP
-     */
-    private function getIP($request): string
-    {
-        if (env('APP_ENV') === 'production') {
-            $ip = $request->ip(); // Can't pull external IP adress in localhost
-        } else {
-            $ip = trim(shell_exec("dig +short myip.opendns.com @resolver1.opendns.com"));
-        }
-
-        return $ip;
     }
 
     private function errorResponse(): JsonResponse

@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rules;
+use App\Http\Controllers\Controller;
+use App\Traits\IpChecks;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Auth\Events\Registered;
 
 class RegisteredUserController extends Controller
 {
+    use IpChecks;
+
     /**
      * Handle an incoming registration request.
      *
@@ -22,7 +27,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -33,11 +38,30 @@ class RegisteredUserController extends Controller
         ]);
 
         $user->wallet()->create();
+        $this->updateCountry($request, $user);
 
         event(new Registered($user));
 
         Auth::login($user);
 
         return response()->noContent();
+    }
+
+    /**
+     * Try fetching and saving country of the user during registration
+     */
+    private function updateCountry(Request $request, User $user)
+    {
+        $ip = $this->getIP($request);
+
+        try{
+            $response = Http::get(env('PROXYCHECK_URL') . $ip . '?vpn=1&asn=1');
+            $jsonRes = $response->json();
+    
+            $user->country = $jsonRes[$ip]['country'];
+            $user->save();
+        } catch (Exception $e) {
+            //
+        }
     }
 }
