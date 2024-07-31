@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\ProfilingController;
 use App\Http\Controllers\Api\UserController;
-use Illuminate\Http\Request;
+use App\Http\Middleware\EnsureProfileUpdateOnceADay;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -11,11 +11,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     Route::prefix('user')->name('user.')->group(function () {
-        // Route::get('/', function (Request $request) {
-        //     return $request->user();
-        // });
-
-        Route::patch('/', [UserController::class, 'update'])->name('update');
+        Route::patch('/', [UserController::class, 'update'])->name('update')
+            ->middleware(EnsureProfileUpdateOnceADay::class);
         Route::get('wallet', [UserController::class, 'wallet'])->name('wallet');
+        Route::get('transactions', [UserController::class, 'transactions'])->name('transactions');
     });
 });

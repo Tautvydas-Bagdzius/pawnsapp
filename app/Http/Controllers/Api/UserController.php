@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\UserUpdatedProfilingAnswers;
 use Illuminate\Http\Request;
 use App\Models\ProfilingQuestion;
 use Illuminate\Http\JsonResponse;
@@ -38,11 +39,26 @@ class UserController extends Controller
             $profiledQuestion = $request->user()->profile()
                 ->firstOrNew(['question_id' => $question->id]);
             $profiledQuestion->answer = $value;
+            $profiledQuestion->updated_at = now(); // Touching to update datetime even if answers are identical
             $profiledQuestion->save();
         }
+
+        UserUpdatedProfilingAnswers::dispatch($request->user());
 
         return response()->json([
             'message' => 'Profile updated successfully!',
         ]);
+    }
+
+    /**
+     * Return a list of transactions, created by current user
+     * Not sure if current user or /users/{id}/transactions was the idea there
+     */
+    public function transactions(Request $request): JsonResponse
+    {
+        $transactions = $request->user()->transactions
+            ->select(['points', 'is_claimed', 'created_at']);
+
+        return response()->json($transactions);
     }
 }

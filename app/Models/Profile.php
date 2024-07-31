@@ -22,6 +22,13 @@ class Profile extends Model
     ];
 
     /**
+     * All of the relationships to be touched.
+     *
+     * @var array
+     */
+    protected $touches = ['user'];
+
+    /**
      * Get the user that owns the wallet.
      */
     public function user(): BelongsTo

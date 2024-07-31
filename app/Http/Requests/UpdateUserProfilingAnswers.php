@@ -22,10 +22,12 @@ class UpdateUserProfilingAnswers extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'gender' => new ProfilingQuestion(),
-            'date_of_birth' => new ProfilingQuestion(),
-        ];
-    }
+        $rules = [];
 
+        foreach (array_keys($this->validationData()) as $field) {
+            $rules[$field] = new ProfilingQuestion();
+        }
+
+        return $rules;
+    }
 }

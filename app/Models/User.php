@@ -57,6 +57,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the transactions associated with the user.
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
      * Get the wallet associated with the user.
      */
     public function wallet(): HasOne
