@@ -49,16 +49,4 @@ class UserController extends Controller
             'message' => 'Profile updated successfully!',
         ]);
     }
-
-    /**
-     * Return a list of transactions, created by current user
-     * Not sure if current user or /users/{id}/transactions was the idea there
-     */
-    public function transactions(Request $request): JsonResponse
-    {
-        $transactions = $request->user()->transactions
-            ->select(['points', 'is_claimed', 'created_at']);
-
-        return response()->json($transactions);
-    }
 }

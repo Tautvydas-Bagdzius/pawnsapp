@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\ProfilingController;
-use App\Http\Controllers\Api\UserController;
-use App\Http\Middleware\EnsureProfileUpdateOnceADay;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\EnsureProfileUpdateOnceADay;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ProfilingController;
+use App\Http\Controllers\Api\TransactionController;
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('profiling')->name('profiling.')->group(function () {
@@ -14,6 +15,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::patch('/', [UserController::class, 'update'])->name('update')
             ->middleware(EnsureProfileUpdateOnceADay::class);
         Route::get('wallet', [UserController::class, 'wallet'])->name('wallet');
-        Route::get('transactions', [UserController::class, 'transactions'])->name('transactions');
+
+
+        Route::prefix('transactions')->name('transactions.')->group(function () {
+            Route::get('/', [TransactionController::class, 'list'])->name('list');
+            Route::post('/', [TransactionController::class, 'claim'])->name('claim');
+        });
     });
 });

@@ -10,7 +10,7 @@ use App\Models\Transaction;
 
 class AwardProfileUpdatedPoints
 {
-    const POINTS_FOR_PROFILE_UPDATE = 5;    
+    const POINTS_FOR_PROFILE_UPDATE = 5;
 
     /**
      * Create the event listener.
@@ -25,10 +25,14 @@ class AwardProfileUpdatedPoints
      */
     public function handle(UserUpdatedProfilingAnswers $event): void
     {
+        $user = $event->user;
+
         Transaction::create([
-            'user_id' => $event->user->id,
+            'user_id' => $user->id,
             'points' => self::POINTS_FOR_PROFILE_UPDATE,
             'is_claimed' => false,
         ]);
+
+        $user->wallet->recalculate();
     }
 }

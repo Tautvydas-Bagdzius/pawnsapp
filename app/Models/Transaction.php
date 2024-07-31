@@ -18,6 +18,7 @@ class Transaction extends Model
         'user_id',
         'points',
         'is_claimed',
+        'claimed_at'
     ];
 
     /**
@@ -29,6 +30,7 @@ class Transaction extends Model
     {
         return [
             'is_claimed' => 'boolean',
+            'claimed_at' => 'date',
         ];
     }
 }
